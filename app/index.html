@@ -2,10 +2,48 @@
 <html>
 <head>
   <title>Blue-Green Deployment</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      align-items: center;        /* vertical center */
+      justify-content: center;    /* horizontal center */
+      background-color: ${BG_COLOR};
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 56px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Version ${ENV}</h1>
-  <h2>Blue-Green Deployment</h2>
-  <p>By using gitand GitHub - Jenkins - DockerHub - Kubernetes</p>
+  <div class="container">
+    <h1>${ENV} VERSION</h1>
+    <h2>Blue-Green Deployment</h2>
+    <p>Jenkins • Git • DockerHub • Kubernetes</p>
+  </div>
 </body>
 </html>
