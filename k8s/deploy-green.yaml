@@ -1,20 +1,24 @@
 apiVersion: apps/v1
-kind: Deployment 
+kind: Deployment
 metadata:
   name: web-green
+  labels:
+    app: web
+    version: green
 spec:
   replicas: 2
   selector:
     matchLabels:
-        app: web 
-        version: green 
-  template:
-    metadaata:
       app: web
-      version: green 
+      version: green
+  template:
+    metadata:
+      labels:
+        app: web
+        version: green
     spec:
       containers:
-      - name: web 
-        image: shankarduppala/myapp:green
+      - name: web
+        image: shankarduppala/myapp:green-{{BUILD_NUMBER}}
         ports:
         - containerPort: 80
