@@ -63,16 +63,16 @@ Verify:
 
 Install Jenkins
 Install required plugins:
-      Git
-      Docker Pipeline
-      Credentials Binding
-      kubectl cli
+                Git
+                Docker Pipeline
+                Credentials Binding
+                kubectl cli
 
 Add Credentials in Jenkins:
-      Docker Hub credentials (Username & Password)
+                Docker Hub credentials (Username & Password)
 
 Kubernetes kubeconfig as Secret File
-      add config file (.kube\config)
+                add config file (.kube\config)
       
 **3️⃣ Docker Image Build Logic**
 
@@ -90,53 +90,53 @@ UI displays which version is live
 **4️⃣ Kubernetes Manifests**
 Blue Deployment
 
-          labels:
-            app: web
-            version: blue
+                    labels:
+                      app: web
+                      version: blue
 Green Deployment
 
-          labels:
-            app: web
-            version: green
+                    labels:
+                      app: web
+                      version: green
 Service
 
-          selector:
-            app: web
-            version: blue
+                    selector:
+                      app: web
+                      version: blue
             
 **5️⃣ Jenkins Pipeline Flow**
-      1. Checkout code from GitHub
-      2. Build Docker image (blue/green)
-      3. Push image to Docker Hub
-      4. Apply Kubernetes manifests
-      5. Update deployment image
-      6. Switch traffic using Service selector
+                1. Checkout code from GitHub
+                2. Build Docker image (blue/green)
+                3. Push image to Docker Hub
+                4. Apply Kubernetes manifests
+                5. Update deployment image
+                6. Switch traffic using Service selector
 
 **🧪 How to Trigger Deployment**
 Manual Trigger
           Jenkins → Build with Parameters
 
-          Choose:
-              blue
-              green
-              rollback
+                    Choose:
+                        blue
+                        green
+                        rollback
 
 **Verify Deployment**
-            kubectl get deploy
-            kubectl get pods
-            kubectl get svc
+                      kubectl get deploy
+                      kubectl get pods
+                      kubectl get svc
             
 **Access application:**
-            minikube service web-svc
+                      minikube service web-svc
             
 **🔄 Rollback Strategy**
 Rollback is instant by switching Service selector back to Blue:
-            kubectl patch svc web-svc -p '{"spec":{"selector":{"version":"blue"}}}'
+                      kubectl patch svc web-svc -p '{"spec":{"selector":{"version":"blue"}}}'
 
 
 🎯 Key Highlights
-        Zero-downtime deployment
-        Immutable Docker images
-        Traffic switching via Kubernetes Service
-        Fully automated using Jenkins
-        All configurations stored in Git
+                  Zero-downtime deployment
+                  Immutable Docker images
+                  Traffic switching via Kubernetes Service
+                  Fully automated using Jenkins
+                  All configurations stored in Git
