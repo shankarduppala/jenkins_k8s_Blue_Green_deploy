@@ -55,8 +55,10 @@ jenkins_k8s_Blue_Green_deploy/
 
 ### 1️⃣ Start Minikube
       minikube start --driver=docker
+      
 Verify:
       kubectl get nodes
+      
 **2️⃣ Jenkins Setup**
 
 Install Jenkins
