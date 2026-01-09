@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "shankarduppala/myapp"
-        VERSION = "${BUILD_NUMBER}"
-        KUBECONFIG = "/var/lib/jenkins/.kube/config"
+        KUBECONFIG = "C:\\Users\\Shankar Rao Duppala\\.kube\\config"
     }
 
     parameters {
@@ -19,7 +18,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git url: 'https://github.com/your-org/jenkins-k8s-project.git',
+                git url: 'https://github.com/shankarduppala/jenkins_k8s_Blue_Green_deploy.git',
                     branch: 'main'
             }
         }
@@ -27,10 +26,8 @@ pipeline {
         stage('Build Docker Image') {
             when { expression { params.DEPLOYMENT != 'rollback' } }
             steps {
-                sh """
-                  docker build \
-                  --build-arg VERSION=${VERSION} \
-                  -t ${IMAGE_NAME}:${params.DEPLOYMENT} .
+                bat """
+                  docker build -t %IMAGE_NAME%:%DEPLOYMENT%-%BUILD_NUMBER% .
                 """
             }
         }
@@ -43,9 +40,9 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    sh """
-                      echo $PASS | docker login -u $USER --password-stdin
-                      docker push ${IMAGE_NAME}:${params.DEPLOYMENT}
+                    bat """
+                      echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                      docker push %IMAGE_NAME%:%DEPLOYMENT%-%BUILD_NUMBER%
                     """
                 }
             }
@@ -53,16 +50,9 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh """
-                  if [ "${params.DEPLOYMENT}" = "blue" ]; then
-                    kubectl apply -f k8s/deploy-blue.yaml
-                    kubectl patch svc web-svc -p '{"spec":{"selector":{"version":"blue"}}}'
-                  elif [ "${params.DEPLOYMENT}" = "green" ]; then
-                    kubectl apply -f k8s/deploy-green.yaml
-                    kubectl patch svc web-svc -p '{"spec":{"selector":{"version":"green"}}}'
-                  else
-                    kubectl patch svc web-svc -p '{"spec":{"selector":{"version":"blue"}}}'
-                  fi
+                bat """
+                  kubectl get nodes
+                  kubectl apply -f k8s/
                 """
             }
         }
