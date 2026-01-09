@@ -57,22 +57,25 @@ jenkins_k8s_Blue_Green_deploy/
       minikube start --driver=docker
       
 Verify:
-      kubectl get nodes
+
+                kubectl get nodes
       
 **2️⃣ Jenkins Setup**
 
 Install Jenkins
 Install required plugins:
-                Git
-                Docker Pipeline
-                Credentials Binding
-                kubectl cli
+                                    Git
+                                    Docker Pipeline
+                                    Credentials Binding
+                                    kubectl cli
 
 Add Credentials in Jenkins:
-                Docker Hub credentials (Username & Password)
+                
+                                    Docker Hub credentials (Username & Password)
 
 Kubernetes kubeconfig as Secret File
-                add config file (.kube\config)
+                
+                                    add config file (.kube\config)
       
 **3️⃣ Docker Image Build Logic**
 
@@ -81,11 +84,11 @@ Jenkins passes deployment type (blue or green) as a Docker build argument
 UI displays which version is live
       Dockerfile
 
-                  FROM nginx:alpine
-                  ARG ENV
-                  ENV ENV=${ENV}
-                  COPY app/index.html /usr/share/nginx/html/index.html
-                  RUN sed -i "s/\${ENV}/${ENV}/g" /usr/share/nginx/html/index.html
+                                      FROM nginx:alpine
+                                      ARG ENV
+                                      ENV ENV=${ENV}
+                                      COPY app/index.html /usr/share/nginx/html/index.html
+                                      RUN sed -i "s/\${ENV}/${ENV}/g" /usr/share/nginx/html/index.html
 
 **4️⃣ Kubernetes Manifests**
 Blue Deployment
@@ -105,12 +108,12 @@ Service
                       version: blue
             
 **5️⃣ Jenkins Pipeline Flow**
-                1. Checkout code from GitHub
-                2. Build Docker image (blue/green)
-                3. Push image to Docker Hub
-                4. Apply Kubernetes manifests
-                5. Update deployment image
-                6. Switch traffic using Service selector
+                                    1. Checkout code from GitHub
+                                    2. Build Docker image (blue/green)
+                                    3. Push image to Docker Hub
+                                    4. Apply Kubernetes manifests
+                                    5. Update deployment image
+                                    6. Switch traffic using Service selector
 
 **🧪 How to Trigger Deployment**
 Manual Trigger
@@ -122,21 +125,21 @@ Manual Trigger
                         rollback
 
 **Verify Deployment**
-                      kubectl get deploy
-                      kubectl get pods
-                      kubectl get svc
-            
+                                          kubectl get deploy
+                                          kubectl get pods
+                                          kubectl get svc
+                                
 **Access application:**
-                      minikube service web-svc
+                                          minikube service web-svc
             
 **🔄 Rollback Strategy**
 Rollback is instant by switching Service selector back to Blue:
-                      kubectl patch svc web-svc -p '{"spec":{"selector":{"version":"blue"}}}'
+                                          kubectl patch svc web-svc -p '{"spec":{"selector":{"version":"blue"}}}'
 
 
 🎯 Key Highlights
-                  Zero-downtime deployment
-                  Immutable Docker images
-                  Traffic switching via Kubernetes Service
-                  Fully automated using Jenkins
-                  All configurations stored in Git
+                                      Zero-downtime deployment
+                                      Immutable Docker images
+                                      Traffic switching via Kubernetes Service
+                                      Fully automated using Jenkins
+                                      All configurations stored in Git
