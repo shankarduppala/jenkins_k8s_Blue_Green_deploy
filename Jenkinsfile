@@ -26,10 +26,11 @@ pipeline {
             when { expression { params.DEPLOYMENT != 'rollback' } }
             steps {
                 bat """
-                docker build -t %IMAGE_NAME%:%DEPLOYMENT%-%BUILD_NUMBER% .
+                docker build --build-arg ENV=%DEPLOYMENT% -t %IMAGE_NAME%:%DEPLOYMENT%-%BUILD_NUMBER% .
                 """
             }
         }
+
 
         stage('Push Docker Image') {
             when { expression { params.DEPLOYMENT != 'rollback' } }

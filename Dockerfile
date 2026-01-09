@@ -1,8 +1,8 @@
 FROM nginx:alpine
 
-ARG VERSION 
-ENV VERSION=${VERSION}
+ARG ENV
+ENV ENV=${ENV}
 
-COPY app/index.html /usr/share/nginx/html/index.html
+COPY index.html /usr/share/nginx/html/index.html
 
-EXPOSE 80 
+RUN sed -i "s/\${ENV}/${ENV}/g" /usr/share/nginx/html/index.html
