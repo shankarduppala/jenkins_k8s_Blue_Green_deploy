@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         IMAGE_NAME = "shankarduppala/myapp"
-        KUBECONFIG = "C:\\Users\\Shankar Rao Duppala\\.kube\\config"
     }
 
     parameters {
@@ -27,7 +26,7 @@ pipeline {
             when { expression { params.DEPLOYMENT != 'rollback' } }
             steps {
                 bat """
-                  docker build -t %IMAGE_NAME%:%DEPLOYMENT%-%BUILD_NUMBER% .
+                docker build -t %IMAGE_NAME%:%DEPLOYMENT%-%BUILD_NUMBER% .
                 """
             }
         }
@@ -41,8 +40,8 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     bat """
-                      echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
-                      docker push %IMAGE_NAME%:%DEPLOYMENT%-%BUILD_NUMBER%
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    docker push %IMAGE_NAME%:%DEPLOYMENT%-%BUILD_NUMBER%
                     """
                 }
             }
@@ -50,10 +49,19 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                bat """
-                  kubectl get nodes
-                  kubectl apply -f k8s/
-                """
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    bat """
+                    IF "%DEPLOYMENT%"=="blue" (
+                        kubectl apply -f k8s\\deploy-blue.yaml
+                        kubectl patch svc web-svc -p "{\\"spec\\":{\\"selector\\":{\\"version\\":\\"blue\\"}}}"
+                    ) ELSE IF "%DEPLOYMENT%"=="green" (
+                        kubectl apply -f k8s\\deploy-green.yaml
+                        kubectl patch svc web-svc -p "{\\"spec\\":{\\"selector\\":{\\"version\\":\\"green\\"}}}"
+                    ) ELSE (
+                        kubectl patch svc web-svc -p "{\\"spec\\":{\\"selector\\":{\\"version\\":\\"blue\\"}}}"
+                    )
+                    """
+                }
             }
         }
     }
